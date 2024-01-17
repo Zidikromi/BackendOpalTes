@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { PutData } from '../api'; 
+import { Bounce, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const EditForm = () => {
   const { id } = useParams(); 
@@ -19,9 +21,23 @@ const EditForm = () => {
   const handleEdit = async () => {
     try {
       await PutData(id, editData); 
+  
+      // Set a flag to indicate successful login
+      localStorage.setItem('editSuccess', 'true');
 
     } catch (error) {
       console.error('Error during edit:', error);
+      toast.error('Login failed. Please check your credentials.', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
      
     }
   };
