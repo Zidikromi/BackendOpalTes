@@ -36,8 +36,9 @@ const GetData = () => {
   useEffect(() => {
     // Check if the login was successful
     const editSuccess = localStorage.getItem('editSuccess');
+
     if (editSuccess === 'true') {
-      // Show toast message for successful login
+      // Show toast message for successful edit
       toast.success('Edit successful', {
         position: "top-center",
         autoClose: 5000,
@@ -50,10 +51,25 @@ const GetData = () => {
         transition: Bounce,
       });
 
-      // Clear the flag after displaying the toast
+      // Clear the flag after displaying the success toast
+      localStorage.removeItem('editSuccess');
+    } else if (editSuccess === 'false') {
+      // Show toast message for unsuccessful edit
+      toast.error('Edit unsuccessful', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+
+      // Clear the flag after displaying the error toast
       localStorage.removeItem('editSuccess');
     }
-
   }, []);
 
   useEffect(() => {

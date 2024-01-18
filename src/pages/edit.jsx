@@ -1,18 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { PutData } from '../api'; 
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { GetUserId, PutData } from '../api';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const EditForm = () => {
-  const { id } = useParams(); 
-
+  const { id } = useParams();
+  const navigate = useNavigate()
   const [editData, setEditData] = useState({
     pass: '',
     pass_confirm: '',
     name: '',
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userData = await GetUserId(id);
+        setEditData({
+          pass: userData.pass,
+          pass_confirm: userData.pass_confirm,
+          name: userData.name,
+        });
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        // Handle error as needed
+      }
+    };
+
+    fetchData();
+  }, [id]);
 
   const handleChange = (e) => {
     setEditData({ ...editData, [e.target.name]: e.target.value });
@@ -20,37 +38,64 @@ const EditForm = () => {
 
   const handleEdit = async () => {
     try {
-      await PutData(id, editData); 
-  
-      // Set a flag to indicate successful login
-      localStorage.setItem('editSuccess', 'true');
+      // Check for empty fields
+      if (!editData.name || !editData.pass || !editData.pass_confirm) {
+        toast.error('Please fill in all fields.', {
+          position: 'top-center',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+        });
+        return;
+      }
+      if (editData.pass !== editData.pass_confirm) {
+        toast.error('Password and Confirm Password do not match.', {
+          position: 'top-center',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'light',
+          transition: Bounce,
+        });
+        return;
+      }
 
+      await PutData(id, editData);
+      localStorage.setItem('editSuccess', 'true');
     } catch (error) {
       console.error('Error during edit:', error);
-      toast.error('Login failed. Please check your credentials.', {
-        position: "top-center",
+      toast.error('Edit failed. Please check your credentials.', {
+        position: 'top-center',
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "light",
+        theme: 'light',
         transition: Bounce,
       });
-     
+      localStorage.setItem('editSuccess', 'false');
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    handleEdit();
-    window.location.href = '/data'
+    await handleEdit(); 
+    navigate('/data'); 
   };
 
   return (
     <div className="container mx-auto mt-8">
-      <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white p-8 border shadow-md">
+      <form onSubmit={handleSubmit} noValidate className="max-w-md mx-auto bg-white p-8 border shadow-md">
         <h2 className="text-2xl font-bold mb-6">Edit Data</h2>
 
         <div className="mb-4">
@@ -100,12 +145,25 @@ const EditForm = () => {
         <div className="mb-6">
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none"
+            className="w-full  bg-red-500 text-white py-2 px-4 rounded-2xl transition-all  hover:bg-red-700 focus:outline-none"
           >
             Edit
           </button>
         </div>
       </form>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={{ bounce: 'bounce', duration: 500 }}
+      />
     </div>
   );
 };

@@ -31,6 +31,33 @@ export const GetUser = async () => {
   }
 };
 
+
+export const GetUserId = async (id) => {
+  try {
+    // Retrieve the token from local storage
+    const token = localStorage.getItem('token');
+
+    // Check if the token is available
+    if (!token) {
+      console.error('Token not found. User is not authenticated.');
+      return; 
+    }
+
+    // Include the token in the request headers
+    const getUserId = await axios.get(`${baseUrl}/api/user/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // console.log('getUser:', getUser.data);
+    return getUserId.data;
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    throw error; // Re-throw the error for the component to handle
+  }
+};
+
 export const postRegister = async () => {
   const register = await axios.post(`${baseUrl}/api/user`)
   console.log({Register: register })
@@ -106,6 +133,7 @@ export const PutData = async (id, editData) => {
           Authorization: `Bearer ${token}`,
         },
       }
+      
     );
 
     // console.log('Edit:', response.data);

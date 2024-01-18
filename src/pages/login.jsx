@@ -1,4 +1,4 @@
-// LoginForm.js
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
@@ -86,11 +86,11 @@ const LoginForm = () => {
 
   return (
     <div className="container mx-auto mt-8">
-      <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white p-8 border shadow-md">
+      <form onSubmit={handleSubmit} noValidate className="max-w-md mx-auto bg-white p-8 border shadow-md">
         <h2 className="text-2xl font-bold mb-6">Login</h2>
 
         <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-600 text-sm font-semibold mb-2">
+          <label htmlFor="email" className="block justify-start text-gray-600 text-sm font-semibold mb-2">
             Email
           </label>
           <input
@@ -124,7 +124,7 @@ const LoginForm = () => {
         <div className="mb-6">
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none"
+            className="w-full bg-red-500 text-white py-2 px-4 rounded-2xl transition-all hover:bg-red-700 focus:outline-none"
           >
             Login
           </button>
