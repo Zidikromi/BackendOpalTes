@@ -59,7 +59,7 @@ export const GetUserId = async (id) => {
 };
 
 export const postRegister = async () => {
-  const register = await axios.post(`${baseUrl}/api/user`)
+  const register = await axios.post(`${baseUrl}/api`)
   console.log({Register: register })
 }
 

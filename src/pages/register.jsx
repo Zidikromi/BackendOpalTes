@@ -1,7 +1,7 @@
 // RegisterForm.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const baseUrl = 'http://localhost:3000';
 
@@ -16,6 +16,7 @@ const RegisterForm = () => {
     cityId: '',
     hobbies: '',
   });
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,8 +24,9 @@ const RegisterForm = () => {
 
   const postRegister = async () => {
     try {
-      const register = await axios.post(`${baseUrl}/api/user`, formData);
+      const register = await axios.post(`${baseUrl}/api`, formData);
       console.log({ Register: register.data });
+      navigate('/login')
     } catch (error) {
       console.error('Error during registration:', error);
     }
@@ -33,7 +35,7 @@ const RegisterForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     postRegister();
-    window.location.href = '/login'
+    
   };
 
   return (
@@ -149,7 +151,7 @@ const RegisterForm = () => {
       <div className="mb-6">
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none"
+          className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-700 focus:outline-none"
         >
           Daftar
         </button>
